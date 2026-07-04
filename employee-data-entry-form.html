@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Employee Data Entry Form</title>
+<style>
+  :root {
+    --navy: #0B1F3A;
+    --navy-light: #16305A;
+    --gold: #C9A227;
+    --gold-light: #E8C766;
+    --bg: #F5F6F8;
+    --card: #FFFFFF;
+    --text: #1C2733;
+    --muted: #6B7686;
+    --border: #DDE1E7;
+    --error: #C0392B;
+    --success: #1E8E5A;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 24px 12px 60px;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; }
+
+  .header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+    border-radius: 14px;
+    padding: 28px 26px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::after {
+    content: "";
+    position: absolute;
+    right: -40px; top: -40px;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: rgba(201,162,39,0.18);
+  }
+  .header .badge {
+    width: 54px; height: 54px;
+    border-radius: 10px;
+    background: var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 20px; color: var(--navy);
+    flex-shrink: 0;
+    z-index: 1;
+  }
+  .header h1 { margin: 0; font-size: 22px; letter-spacing: 0.3px; z-index: 1; }
+  .header p { margin: 4px 0 0; font-size: 13px; color: #C9D2E0; z-index: 1; }
+
+  .section {
+    background: var(--card);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .section-title {
+    background: var(--navy);
+    color: #fff;
+    padding: 12px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-left: 4px solid var(--gold);
+  }
+  .section-body {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 18px;
+  }
+  @media (max-width: 600px) {
+    .section-body { grid-template-columns: 1fr; }
+  }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field.full { grid-column: 1 / -1; }
+  label { font-size: 13px; font-weight: 600; color: var(--navy); }
+  label .req { color: var(--error); margin-left: 2px; }
+  input, select, textarea {
+    font-family: inherit;
+    font-size: 14px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--text);
+    outline: none;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(201,162,39,0.18);
+  }
+  .error-text { font-size: 12px; color: var(--error); display: none; }
+  .field.invalid input, .field.invalid select { border-color: var(--error); }
+  .field.invalid .error-text { display: block; }
+
+  .actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    padding: 4px 4px 0;
+  }
+  button {
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 12px 22px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: transform .1s, opacity .15s;
+  }
+  button:active { transform: scale(0.98); }
+  .btn-primary {
+    background: var(--navy);
+    color: #fff;
+  }
+  .btn-primary:hover { background: var(--navy-light); }
+  .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+  .btn-secondary {
+    background: transparent;
+    color: var(--navy);
+    border: 1px solid var(--border);
+  }
+
+  .status {
+    text-align: center;
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    display: none;
+  }
+  .status.show { display: block; }
+  .status.ok { background: #E6F5EE; color: var(--success); border: 1px solid #BFE6D2; }
+  .status.err { background: #FBEAE8; color: var(--error); border: 1px solid #F2C6C0; }
+  .status.loading { background: #FFF7E0; color: #8A6D00; border: 1px solid #F0E0A0; }
+
+  .config-note {
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 18px;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <div class="badge">ET</div>
+    <div>
+      <h1>Employee Data Entry Form</h1>
+      <p>Please complete every section accurately. Fields marked * are required.</p>
+    </div>
+  </div>
+
+  <div id="status" class="status"></div>
+
+  <form id="empForm">
+
+    <div class="section">
+      <div class="section-title">👤 Personal Information</div>
+      <div class="section-body">
+        <div class="field">
+          <label>Employee ID <span class="req">*</span></label>
+          <input type="text" name="employeeId" placeholder="e.g. EMP-0001" required>
+          <span class="error-text">Employee ID is required</span>
+        </div>
+        <div class="field">
+          <label>Date of Joining</label>
+          <input type="date" name="dateOfJoining">
+        </div>
+        <div class="field">
+          <label>Last Name <span class="req">*</span></label>
+          <input type="text" name="lastName" placeholder="Enter last name" required>
+          <span class="error-text">Last name is required</span>
+        </div>
+        <div class="field">
+          <label>First Name <span class="req">*</span></label>
+          <input type="text" name="firstName" placeholder="Enter first name" required>
+          <span class="error-text">First name is required</span>
+        </div>
+        <div class="field">
+          <label>Middle Name</label>
+          <input type="text" name="middleName" placeholder="Enter middle name">
+        </div>
+        <div class="field">
+          <label>Gender <span class="req">*</span></label>
+          <select name="gender" required>
+            <option value="">Select</option>
+            <option>Male</option>
+            <option>Female</option>
+          </select>
+          <span class="error-text">Please select a gender</span>
+        </div>
+        <div class="field">
+          <label>Date of Birth</label>
+          <input type="date" name="dob">
+        </div>
+        <div class="field">
+          <label>Nationality</label>
+          <input type="text" name="nationality" placeholder="e.g. Iraqi">
+        </div>
+        <div class="field">
+          <label>Civil Status</label>
+          <select name="civilStatus">
+            <option value="">Select</option>
+            <option>Single</option>
+            <option>Married</option>
+            <option>Divorced</option>
+            <option>Widowed</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">📞 Contact Information</div>
+      <div class="section-body">
+        <div class="field">
+          <label>Mobile Number <span class="req">*</span></label>
+          <input type="tel" name="mobile" placeholder="e.g. 05X XXX XXXX" required>
+          <span class="error-text">Mobile number is required</span>
+        </div>
+        <div class="field">
+          <label>Email Address <span class="req">*</span></label>
+          <input type="email" name="email" placeholder="name@company.com" required>
+          <span class="error-text">A valid email is required</span>
+        </div>
+        <div class="field full">
+          <label>Address</label>
+          <input type="text" name="address" placeholder="Street, area, city">
+        </div>
+        <div class="field">
+          <label>Emergency Contact Name</label>
+          <input type="text" name="emergencyName" placeholder="Full name">
+        </div>
+        <div class="field">
+          <label>Emergency Contact Number</label>
+          <input type="tel" name="emergencyNumber" placeholder="Phone number">
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">💼 Employment Details</div>
+      <div class="section-body">
+        <div class="field">
+          <label>Department <span class="req">*</span></label>
+          <input type="text" name="department" placeholder="e.g. Merchant Support" required>
+          <span class="error-text">Department is required</span>
+        </div>
+        <div class="field">
+          <label>Job Title</label>
+          <input type="text" name="jobTitle" placeholder="e.g. Merchant Support Assistant">
+        </div>
+        <div class="field">
+          <label>Reporting Manager</label>
+          <input type="text" name="manager" placeholder="Manager's name">
+        </div>
+        <div class="field">
+          <label>Employment Type</label>
+          <select name="employmentType">
+            <option value="">Select</option>
+            <option>Full-time</option>
+            <option>Part-time</option>
+            <option>Contract</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">🆔 Identification & Documents</div>
+      <div class="section-body">
+        <div class="field">
+          <label>Emirates ID / National ID</label>
+          <input type="text" name="nationalId" placeholder="ID number">
+        </div>
+        <div class="field">
+          <label>Passport Number</label>
+          <input type="text" name="passport" placeholder="Passport number">
+        </div>
+        <div class="field">
+          <label>Visa Status</label>
+          <input type="text" name="visaStatus" placeholder="e.g. Employment visa">
+        </div>
+        <div class="field">
+          <label>Labour Card Number</label>
+          <input type="text" name="labourCard" placeholder="Labour card number">
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="button" class="btn-secondary" id="resetBtn">Clear Form</button>
+      <button type="submit" class="btn-primary" id="submitBtn">Save Entry</button>
+    </div>
+
+  </form>
+
+  <p class="config-note">
+    This form saves directly to your connected Google Sheet.<br>
+    Configuration is required once — see the Apps Script setup file provided alongside this form.
+  </p>
+
+</div>
+
+<script>
+  // ⚠️ Paste your deployed Google Apps Script Web App URL here after setup.
+  const SCRIPT_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
+
+  const form = document.getElementById('empForm');
+  const statusEl = document.getElementById('status');
+  const submitBtn = document.getElementById('submitBtn');
+
+  function showStatus(type, msg) {
+    statusEl.className = 'status show ' + type;
+    statusEl.textContent = msg;
+  }
+
+  function clearErrors() {
+    form.querySelectorAll('.field').forEach(f => f.classList.remove('invalid'));
+  }
+
+  function validate() {
+    clearErrors();
+    let valid = true;
+    form.querySelectorAll('[required]').forEach(input => {
+      if (!input.value.trim()) {
+        input.closest('.field').classList.add('invalid');
+        valid = false;
+      }
+    });
+    const emailInput = form.querySelector('[name="email"]');
+    if (emailInput.value && !/^\S+@\S+\.\S+$/.test(emailInput.value)) {
+      emailInput.closest('.field').classList.add('invalid');
+      valid = false;
+    }
+    return valid;
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!validate()) {
+      showStatus('err', 'Please fill in all required fields correctly.');
+      return;
+    }
+    if (SCRIPT_URL.includes('PASTE_YOUR')) {
+      showStatus('err', 'Setup needed: add your Apps Script Web App URL in the code (see instructions).');
+      return;
+    }
+
+    submitBtn.disabled = true;
+    showStatus('loading', 'Saving entry…');
+
+    const data = Object.fromEntries(new FormData(form).entries());
+    data.timestamp = new Date().toISOString();
+
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(data)
+      });
+      showStatus('ok', 'Employee entry saved successfully.');
+      form.reset();
+    } catch (err) {
+      showStatus('err', 'Something went wrong. Please try again.');
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    form.reset();
+    clearErrors();
+    statusEl.className = 'status';
+  });
+</script>
+
+</body>
+</html>
