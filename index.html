@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Employee Data Entry Form</title>
+<title>Merchant KYC Update Form</title>
 <style>
   :root {
     --navy: #0B1F3A;
@@ -53,11 +53,11 @@
     border-radius: 10px;
     background: var(--gold);
     display: flex; align-items: center; justify-content: center;
-    font-weight: 700; font-size: 20px; color: var(--navy);
+    font-weight: 700; font-size: 18px; color: var(--navy);
     flex-shrink: 0;
     z-index: 1;
   }
-  .header h1 { margin: 0; font-size: 22px; letter-spacing: 0.3px; z-index: 1; }
+  .header h1 { margin: 0; font-size: 21px; letter-spacing: 0.3px; z-index: 1; }
   .header p { margin: 4px 0 0; font-size: 13px; color: #C9D2E0; z-index: 1; }
 
   .section {
@@ -112,6 +112,19 @@
   .field.invalid input, .field.invalid select { border-color: var(--error); }
   .field.invalid .error-text { display: block; }
 
+  .subhead {
+    grid-column: 1 / -1;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-top: 4px;
+    padding-bottom: 4px;
+    border-bottom: 1px dashed var(--border);
+  }
+  .subhead:first-child { margin-top: 0; }
+
   .actions {
     display: flex;
     gap: 12px;
@@ -129,17 +142,10 @@
     transition: transform .1s, opacity .15s;
   }
   button:active { transform: scale(0.98); }
-  .btn-primary {
-    background: var(--navy);
-    color: #fff;
-  }
+  .btn-primary { background: var(--navy); color: #fff; }
   .btn-primary:hover { background: var(--navy-light); }
   .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
-  .btn-secondary {
-    background: transparent;
-    color: var(--navy);
-    border: 1px solid var(--border);
-  }
+  .btn-secondary { background: transparent; color: var(--navy); border: 1px solid var(--border); }
 
   .status {
     text-align: center;
@@ -155,6 +161,23 @@
   .status.err { background: #FBEAE8; color: var(--error); border: 1px solid #F2C6C0; }
   .status.loading { background: #FFF7E0; color: #8A6D00; border: 1px solid #F0E0A0; }
 
+  .gps-box {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    background: #F0F3F8;
+    border: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .gps-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--muted); flex-shrink: 0; }
+  .gps-dot.active { background: var(--success); }
+  .gps-dot.error { background: var(--error); }
+  .gps-text { color: var(--muted); }
+  .gps-text b { color: var(--text); }
+
   .config-note {
     font-size: 12px;
     color: var(--muted);
@@ -168,148 +191,130 @@
 <div class="wrap">
 
   <div class="header">
-    <div class="badge">ET</div>
+    <div class="badge">KYC</div>
     <div>
-      <h1>Employee Data Entry Form</h1>
+      <h1>Merchant KYC Update Form</h1>
       <p>Please complete every section accurately. Fields marked * are required.</p>
     </div>
   </div>
 
   <div id="status" class="status"></div>
 
-  <form id="empForm">
+  <form id="kycForm">
 
     <div class="section">
-      <div class="section-title">👤 Personal Information</div>
+      <div class="section-title">🏢 Merchant Information</div>
       <div class="section-body">
-        <div class="field">
-          <label>Employee ID <span class="req">*</span></label>
-          <input type="text" name="employeeId" placeholder="e.g. EMP-0001" required>
-          <span class="error-text">Employee ID is required</span>
+        <div class="field full">
+          <label>Merchant Full Company Name <span class="req">*</span></label>
+          <input type="text" name="companyName" placeholder="Enter registered company name" required>
+          <span class="error-text">Company name is required</span>
         </div>
         <div class="field">
-          <label>Date of Joining</label>
-          <input type="date" name="dateOfJoining">
+          <label>TRN Number <span class="req">*</span></label>
+          <input type="text" name="trn" placeholder="e.g. 100XXXXXXXXXXXX" required>
+          <span class="error-text">TRN number is required</span>
         </div>
         <div class="field">
-          <label>Last Name <span class="req">*</span></label>
-          <input type="text" name="lastName" placeholder="Enter last name" required>
-          <span class="error-text">Last name is required</span>
-        </div>
-        <div class="field">
-          <label>First Name <span class="req">*</span></label>
-          <input type="text" name="firstName" placeholder="Enter first name" required>
-          <span class="error-text">First name is required</span>
-        </div>
-        <div class="field">
-          <label>Middle Name</label>
-          <input type="text" name="middleName" placeholder="Enter middle name">
-        </div>
-        <div class="field">
-          <label>Gender <span class="req">*</span></label>
-          <select name="gender" required>
-            <option value="">Select</option>
-            <option>Male</option>
-            <option>Female</option>
-          </select>
-          <span class="error-text">Please select a gender</span>
-        </div>
-        <div class="field">
-          <label>Date of Birth</label>
-          <input type="date" name="dob">
-        </div>
-        <div class="field">
-          <label>Nationality</label>
-          <input type="text" name="nationality" placeholder="e.g. Iraqi">
-        </div>
-        <div class="field">
-          <label>Civil Status</label>
-          <select name="civilStatus">
-            <option value="">Select</option>
-            <option>Single</option>
-            <option>Married</option>
-            <option>Divorced</option>
-            <option>Widowed</option>
-          </select>
+          <label>Store Name <span class="req">*</span></label>
+          <input type="text" name="storeName" placeholder="Enter store / outlet name" required>
+          <span class="error-text">Store name is required</span>
         </div>
       </div>
     </div>
 
     <div class="section">
-      <div class="section-title">📞 Contact Information</div>
+      <div class="section-title">👥 Key Contacts</div>
       <div class="section-body">
+
+        <div class="subhead">A. Signatory</div>
         <div class="field">
-          <label>Mobile Number <span class="req">*</span></label>
-          <input type="tel" name="mobile" placeholder="e.g. 05X XXX XXXX" required>
-          <span class="error-text">Mobile number is required</span>
+          <label>Full Name <span class="req">*</span></label>
+          <input type="text" name="signatoryName" placeholder="Enter full name" required>
+          <span class="error-text">Required</span>
         </div>
         <div class="field">
-          <label>Email Address <span class="req">*</span></label>
-          <input type="email" name="email" placeholder="name@company.com" required>
-          <span class="error-text">A valid email is required</span>
+          <label>Email <span class="req">*</span></label>
+          <input type="email" name="signatoryEmail" placeholder="name@company.com" required>
+          <span class="error-text">Valid email required</span>
         </div>
         <div class="field full">
-          <label>Address</label>
-          <input type="text" name="address" placeholder="Street, area, city">
+          <label>Phone Number <span class="req">*</span></label>
+          <input type="tel" name="signatoryPhone" placeholder="e.g. 05X XXX XXXX" required>
+          <span class="error-text">Required</span>
+        </div>
+
+        <div class="subhead">B. Finance Manager</div>
+        <div class="field">
+          <label>Full Name</label>
+          <input type="text" name="financeName" placeholder="Enter full name">
         </div>
         <div class="field">
-          <label>Emergency Contact Name</label>
-          <input type="text" name="emergencyName" placeholder="Full name">
+          <label>Email</label>
+          <input type="email" name="financeEmail" placeholder="name@company.com">
+        </div>
+        <div class="field full">
+          <label>Phone Number</label>
+          <input type="tel" name="financePhone" placeholder="e.g. 05X XXX XXXX">
+        </div>
+
+        <div class="subhead">C. Store Manager</div>
+        <div class="field">
+          <label>Full Name</label>
+          <input type="text" name="storeManagerName" placeholder="Enter full name">
         </div>
         <div class="field">
-          <label>Emergency Contact Number</label>
-          <input type="tel" name="emergencyNumber" placeholder="Phone number">
+          <label>Email</label>
+          <input type="email" name="storeManagerEmail" placeholder="name@company.com">
         </div>
+        <div class="field full">
+          <label>Phone Number</label>
+          <input type="tel" name="storeManagerPhone" placeholder="e.g. 05X XXX XXXX">
+        </div>
+
       </div>
     </div>
 
     <div class="section">
-      <div class="section-title">💼 Employment Details</div>
+      <div class="section-title">📍 Store Address</div>
       <div class="section-body">
         <div class="field">
-          <label>Department <span class="req">*</span></label>
-          <input type="text" name="department" placeholder="e.g. Merchant Support" required>
-          <span class="error-text">Department is required</span>
+          <label>Shop #</label>
+          <input type="text" name="shopNumber" placeholder="e.g. Shop 12">
         </div>
         <div class="field">
-          <label>Job Title</label>
-          <input type="text" name="jobTitle" placeholder="e.g. Merchant Support Assistant">
+          <label>Building Name</label>
+          <input type="text" name="buildingName" placeholder="Enter building name">
         </div>
         <div class="field">
-          <label>Reporting Manager</label>
-          <input type="text" name="manager" placeholder="Manager's name">
+          <label>Street Name</label>
+          <input type="text" name="streetName" placeholder="Enter street name">
         </div>
         <div class="field">
-          <label>Employment Type</label>
-          <select name="employmentType">
+          <label>Area Name</label>
+          <input type="text" name="areaName" placeholder="Enter area name">
+        </div>
+        <div class="field">
+          <label>Emirate <span class="req">*</span></label>
+          <select name="emirate" required>
             <option value="">Select</option>
-            <option>Full-time</option>
-            <option>Part-time</option>
-            <option>Contract</option>
+            <option>Abu Dhabi</option>
+            <option>Dubai</option>
+            <option>Sharjah</option>
+            <option>Ajman</option>
+            <option>Umm Al Quwain</option>
+            <option>Ras Al Khaimah</option>
+            <option>Fujairah</option>
           </select>
+          <span class="error-text">Please select an Emirate</span>
         </div>
-      </div>
-    </div>
 
-    <div class="section">
-      <div class="section-title">🆔 Identification & Documents</div>
-      <div class="section-body">
-        <div class="field">
-          <label>Emirates ID / National ID</label>
-          <input type="text" name="nationalId" placeholder="ID number">
+        <div class="gps-box">
+          <div class="gps-dot" id="gpsDot"></div>
+          <div class="gps-text" id="gpsText">Requesting location access…</div>
         </div>
-        <div class="field">
-          <label>Passport Number</label>
-          <input type="text" name="passport" placeholder="Passport number">
-        </div>
-        <div class="field">
-          <label>Visa Status</label>
-          <input type="text" name="visaStatus" placeholder="e.g. Employment visa">
-        </div>
-        <div class="field">
-          <label>Labour Card Number</label>
-          <input type="text" name="labourCard" placeholder="Labour card number">
-        </div>
+        <input type="hidden" name="latitude" id="latitude">
+        <input type="hidden" name="longitude" id="longitude">
       </div>
     </div>
 
@@ -321,8 +326,7 @@
   </form>
 
   <p class="config-note">
-    This form saves directly to your connected Google Sheet.<br>
-    Configuration is required once — see the Apps Script setup file provided alongside this form.
+    This form saves directly to your connected Google Sheet, including the store's GPS coordinates captured automatically at submission time.
   </p>
 
 </div>
@@ -331,9 +335,35 @@
   // ⚠️ Paste your deployed Google Apps Script Web App URL here after setup.
   const SCRIPT_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
 
-  const form = document.getElementById('empForm');
+  const form = document.getElementById('kycForm');
   const statusEl = document.getElementById('status');
   const submitBtn = document.getElementById('submitBtn');
+  const gpsDot = document.getElementById('gpsDot');
+  const gpsText = document.getElementById('gpsText');
+  const latInput = document.getElementById('latitude');
+  const lngInput = document.getElementById('longitude');
+
+  function captureLocation() {
+    if (!navigator.geolocation) {
+      gpsDot.classList.add('error');
+      gpsText.textContent = 'Geolocation is not supported on this device.';
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        latInput.value = pos.coords.latitude.toFixed(6);
+        lngInput.value = pos.coords.longitude.toFixed(6);
+        gpsDot.classList.add('active');
+        gpsText.innerHTML = 'Location captured: <b>' + latInput.value + ', ' + lngInput.value + '</b>';
+      },
+      (err) => {
+        gpsDot.classList.add('error');
+        gpsText.textContent = 'Location access denied. Please enable location permissions and reload.';
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  }
+  captureLocation();
 
   function showStatus(type, msg) {
     statusEl.className = 'status show ' + type;
@@ -353,11 +383,12 @@
         valid = false;
       }
     });
-    const emailInput = form.querySelector('[name="email"]');
-    if (emailInput.value && !/^\S+@\S+\.\S+$/.test(emailInput.value)) {
-      emailInput.closest('.field').classList.add('invalid');
-      valid = false;
-    }
+    form.querySelectorAll('input[type="email"]').forEach(input => {
+      if (input.value && !/^\S+@\S+\.\S+$/.test(input.value)) {
+        input.closest('.field').classList.add('invalid');
+        valid = false;
+      }
+    });
     return valid;
   }
 
@@ -369,6 +400,10 @@
     }
     if (SCRIPT_URL.includes('PASTE_YOUR')) {
       showStatus('err', 'Setup needed: add your Apps Script Web App URL in the code (see instructions).');
+      return;
+    }
+    if (!latInput.value) {
+      showStatus('err', 'Location not yet captured. Please allow location access and try again.');
       return;
     }
 
@@ -385,8 +420,9 @@
         headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify(data)
       });
-      showStatus('ok', 'Employee entry saved successfully.');
+      showStatus('ok', 'Merchant KYC entry saved successfully.');
       form.reset();
+      captureLocation();
     } catch (err) {
       showStatus('err', 'Something went wrong. Please try again.');
     } finally {
@@ -398,6 +434,7 @@
     form.reset();
     clearErrors();
     statusEl.className = 'status';
+    captureLocation();
   });
 </script>
 

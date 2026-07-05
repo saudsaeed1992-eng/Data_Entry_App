@@ -1,5 +1,5 @@
 /**
- * EMPLOYEE DATA ENTRY FORM — GOOGLE SHEETS BACKEND
+ * MERCHANT KYC UPDATE FORM — GOOGLE SHEETS BACKEND
  * ---------------------------------------------------
  * SETUP STEPS:
  *
@@ -9,7 +9,7 @@
  * 4. Click the disk icon (Save project).
  * 5. Click "Deploy" > "New deployment".
  *    - Click the gear icon next to "Select type" > choose "Web app".
- *    - Description: "Employee Form Backend" (or anything).
+ *    - Description: "Merchant KYC Form Backend" (or anything).
  *    - Execute as: "Me"
  *    - Who has access: "Anyone" (required so the form can submit without login)
  *    - Click "Deploy".
@@ -17,35 +17,44 @@
  *    this is expected for your own scripts; choose your account > Advanced >
  *    Go to project (unsafe) > Allow).
  * 7. Copy the "Web app URL" you're given after deployment.
- * 8. Open employee-data-entry-form.html, find this line near the bottom:
+ * 8. Open index.html, find this line near the bottom:
  *        const SCRIPT_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
  *    Replace the placeholder text with the URL you copied.
- * 9. Save the HTML file and open it in a browser (or upload it somewhere
- *    you can open it from, like Google Drive > open with browser, or host
- *    it on your desktop). Submitting the form will now add a row to this Sheet.
+ * 9. Save and redeploy on Vercel (or just push to GitHub — Vercel auto-redeploys).
  *
  * NOTE: Every time you make a code change here, you must create a
  * "New deployment" again (or manage deployments > edit > new version)
  * for the changes to take effect on the live URL.
+ *
+ * A Google Maps link is auto-generated from the GPS coordinates in the
+ * last column, so you can tap it directly from the Sheet to view the
+ * store location on a map.
  */
 
 function doPost(e) {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
   const data = JSON.parse(e.postData.contents);
 
-  // Define the column order — must match the 'name' attributes in the HTML form
+  // Define the column order — must match the 'name' attributes in index.html
   const headers = [
-    "timestamp", "employeeId", "dateOfJoining", "lastName", "firstName",
-    "middleName", "gender", "dob", "nationality", "civilStatus",
-    "mobile", "email", "address", "emergencyName", "emergencyNumber",
-    "department", "jobTitle", "manager", "employmentType",
-    "nationalId", "passport", "visaStatus", "labourCard"
+    "timestamp",
+    "companyName", "trn", "storeName",
+    "signatoryName", "signatoryEmail", "signatoryPhone",
+    "financeName", "financeEmail", "financePhone",
+    "storeManagerName", "storeManagerEmail", "storeManagerPhone",
+    "shopNumber", "buildingName", "streetName", "areaName", "emirate",
+    "latitude", "longitude", "mapLink"
   ];
 
   // If the sheet is empty, write the header row first
   if (sheet.getLastRow() === 0) {
     sheet.appendRow(headers);
   }
+
+  // Build a clickable Google Maps link from the captured coordinates
+  data.mapLink = (data.latitude && data.longitude)
+    ? "https://www.google.com/maps?q=" + data.latitude + "," + data.longitude
+    : "";
 
   const row = headers.map(h => data[h] || "");
   sheet.appendRow(row);
@@ -61,6 +70,6 @@ function doPost(e) {
  */
 function doGet(e) {
   return ContentService.createTextOutput(
-    "Employee form backend is running."
+    "Merchant KYC form backend is running."
   );
 }
