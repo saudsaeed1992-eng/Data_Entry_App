@@ -313,8 +313,14 @@
           <div class="gps-dot" id="gpsDot"></div>
           <div class="gps-text" id="gpsText">Requesting location access…</div>
         </div>
-        <input type="hidden" name="latitude" id="latitude">
-        <input type="hidden" name="longitude" id="longitude">
+        <div class="field">
+          <label>Latitude (auto-filled, or enter manually)</label>
+          <input type="text" name="latitude" id="latitude" placeholder="e.g. 25.276987">
+        </div>
+        <div class="field">
+          <label>Longitude (auto-filled, or enter manually)</label>
+          <input type="text" name="longitude" id="longitude" placeholder="e.g. 55.296249">
+        </div>
       </div>
     </div>
 
@@ -358,7 +364,7 @@
       },
       (err) => {
         gpsDot.classList.add('error');
-        gpsText.textContent = 'Location access denied. Please enable location permissions and reload.';
+        gpsText.textContent = 'Location not captured automatically. You can enter coordinates manually below (optional).';
       },
       { enableHighAccuracy: true, timeout: 10000 }
     );
@@ -400,10 +406,6 @@
     }
     if (SCRIPT_URL.includes('PASTE_YOUR')) {
       showStatus('err', 'Setup needed: add your Apps Script Web App URL in the code (see instructions).');
-      return;
-    }
-    if (!latInput.value) {
-      showStatus('err', 'Location not yet captured. Please allow location access and try again.');
       return;
     }
 
