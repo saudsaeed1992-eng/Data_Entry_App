@@ -31,8 +31,10 @@
  * store location on a map.
  */
 
+const SHEET_ID = "10cxQEFbd6I6vxN-kR6Q9golBcZex2XUocZToBdOApIo";
+
 function doPost(e) {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName("Sheet1") || SpreadsheetApp.openById(SHEET_ID).getActiveSheet();
   const data = JSON.parse(e.postData.contents);
 
   // Define the column order — must match the 'name' attributes in index.html
